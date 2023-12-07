@@ -4,11 +4,19 @@ Ruby on Rails integration for ChromaDB based on `chroma-db` gem.
 
 ## Installation
 
-Install the gem and add to the application's Gemfile by executing:
+Since `chromable` is depending on `chroma-db` gem, you will need to install it using:
+
+    $ bundle add chroma-db
+
+Or, if you are not using bundler, install it by executing:
+
+    $ gem install chroma-db
+
+Then, install `chromable` and add to the application's Gemfile by executing:
 
     $ bundle add chromable
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+Or, if you are not using bundler, install it by executing:
 
     $ gem install chromable
 
@@ -24,18 +32,24 @@ Chroma.logger = Logger.new($stdout)
 Chroma.log_level = Chroma::LEVEL_ERROR
 ```
 
-Then, add the following line to your Rails model:
+Then, include `Chromable` module in your model and initialize it:
 
 ```ruby
-chromable document: :content, metadata: %i[author category], embedder: :embed
+class Post < ApplicationRecord
+  include Chromable
+
+  chromable document: :content, metadata: %i[author category], embedder: :embed
+end
 ```
 
 Where:
 - `document:` is a callable represents the text content you want to embed and store in ChromaDB.
-- `metadata:` is the list of attributes to be passed to ChromaDB as metadata.
-- `embedder:` is the method that returns the embedding representation for the current instance.
+- `metadata:` is the list of attributes to be passed to ChromaDB as metadata to be used to filter.
+- `embedder:` is a callable returns the embedding representation for the current instance.
 
 Optionaly you can pass `collection_name:`. If not passed, the plural form of the model name will be used.
+
+All `chromable` method arguments are optional.
 
 To interact with the ChromaDB collection, `chromable` provides `Model.collection` method to retrieve the collection instance.
 Also, `chromable` provides the following methods for each model instance:
