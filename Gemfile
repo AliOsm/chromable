@@ -7,6 +7,7 @@ gemspec
 
 group :development do
   gem 'rubocop', '~> 1.58'
+  gem 'rubocop-rspec', '~> 2.25'
 end
 
 group :test do

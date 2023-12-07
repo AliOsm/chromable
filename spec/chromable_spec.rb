@@ -2,6 +2,6 @@
 
 RSpec.describe Chromable do
   it 'has a version number' do
-    expect(Chromable::VERSION).not_to be nil
+    expect(Chromable::VERSION).not_to be_nil
   end
 end
