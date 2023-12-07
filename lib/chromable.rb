@@ -19,7 +19,7 @@ module Chromable
   end
 
   class_methods do
-    def chromable(document:, metadata:, embedder:, collection_name: nil)
+    def chromable(collection_name: nil, document: nil, metadata: nil, embedder: nil)
       self.collection_name = (collection_name.presence || name.underscore.pluralize)
       self.document = document
       self.metadata = metadata
@@ -41,9 +41,9 @@ module Chromable
     self.class.chroma_collection.upsert(
       Chroma::Resources::Embedding.new(
         id: id,
-        document: send(self.class.document),
-        embedding: send(self.class.embedder),
-        metadata: self.class.metadata.index_with { |attribute| send(attribute) }
+        document: self.class.document ? send(self.class.document) : nil,
+        embedding: self.class.embedder ? send(self.class.embedder) : nil,
+        metadata: self.class.metadata ? self.class.metadata.index_with { |attribute| send(attribute) } : nil
       )
     )
   end
