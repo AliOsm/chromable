@@ -2,11 +2,18 @@ PATH
   remote: .
   specs:
     chromable (0.1.0)
+      activesupport (~> 6.1)
       chroma-db (~> 0.6.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    activesupport (6.1.7.6)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
     ast (2.4.2)
     chroma-db (0.6.0)
       dry-monads (~> 1.6)
@@ -20,8 +27,11 @@ GEM
       concurrent-ruby (~> 1.0)
       dry-core (~> 1.0, < 2)
       zeitwerk (~> 2.6)
+    i18n (1.14.1)
+      concurrent-ruby (~> 1.0)
     json (2.7.1)
     language_server-protocol (3.17.0.3)
+    minitest (5.20.0)
     parallel (1.23.0)
     parser (3.2.2.4)
       ast (~> 2.4.1)
@@ -72,6 +82,8 @@ GEM
     ruby-next-parser (3.2.2.0)
       parser (>= 3.0.3.1)
     ruby-progressbar (1.13.0)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
     unparser (0.6.10)
       diff-lcs (~> 1.3)
