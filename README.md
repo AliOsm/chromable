@@ -4,21 +4,14 @@ Ruby on Rails integration for ChromaDB based on `chroma-db` gem.
 
 ## Installation
 
-Since `chromable` is depending on `chroma-db` gem, you will need to install it using:
+Since `chromable` is depending on `chroma-db` gem, you will need to install them both:
 
     $ bundle add chroma-db
-
-Or, if you are not using bundler, install it by executing:
-
-    $ gem install chroma-db
-
-Then, install `chromable` and add to the application's Gemfile by executing:
-
     $ bundle add chromable
 
-Or, if you are not using bundler, install it by executing:
+Or, if you are not using bundler, install then by executing:
 
-    $ gem install chromable
+    $ gem install chroma-db chromable
 
 ## Usage
 
@@ -39,6 +32,10 @@ class Post < ApplicationRecord
   include Chromable
 
   chromable document: :content, metadata: %i[author category], embedder: :embed
+
+  def embed
+    # Call OpenAI now please :)
+  end
 end
 ```
 
