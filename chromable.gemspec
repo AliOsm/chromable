@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary = 'Ruby on Rails integration for ChromaDB'
   spec.homepage = 'https://github.com/AliOsm/chromable'
   spec.license = 'MIT'
-  spec.required_ruby_version = '>= 2.6.0'
+  spec.required_ruby_version = '>= 3.0.0'
 
   spec.metadata['allowed_push_host'] = 'https://rubygems.org'
 
