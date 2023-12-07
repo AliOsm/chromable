@@ -48,6 +48,8 @@ Optionaly you can pass `collection_name:`. If not passed, the plural form of the
 
 All `chromable` method arguments are optional.
 
+At this point, `chromable` will create, update, and destroy the ChromaDB embeddings for your objects based on Rails callbacks.
+
 To interact with the ChromaDB collection, `chromable` provides `Model.collection` method to retrieve the collection instance.
 Also, `chromable` provides the following methods for each model instance:
 
