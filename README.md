@@ -4,14 +4,13 @@ Ruby on Rails integration for ChromaDB based on `chroma-db` gem.
 
 ## Installation
 
-Since `chromable` is depending on `chroma-db` gem, you will need to install them both:
+Install `chromable` and add it to the application's Gemfile by executing:
 
-    $ bundle add chroma-db
     $ bundle add chromable
 
-Or, if you are not using bundler, install then by executing:
+Or, if bundler is not being used to manage dependencies, install `chromable` by executing:
 
-    $ gem install chroma-db chromable
+    $ gem install chromable
 
 ## Usage
 
