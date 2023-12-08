@@ -53,6 +53,6 @@ module Chromable
   end
 
   alias embedding chroma_embedding unless method_defined? :embedding
-  alias upsert_embedding chroma_embedding unless method_defined? :upsert_embedding
-  alias destroy_embedding chroma_embedding unless method_defined? :destroy_embedding
+  alias upsert_embedding chroma_upsert_embedding unless method_defined? :upsert_embedding
+  alias destroy_embedding chroma_destroy_embedding unless method_defined? :destroy_embedding
 end
