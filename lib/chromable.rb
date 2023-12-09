@@ -1,24 +1,21 @@
 # frozen_string_literal: true
 
-require 'active_support/concern'
-
 require_relative 'chromable/version'
 
 # Ruby on Rails integration for ChromaDB.
 module Chromable
-  extend ActiveSupport::Concern
-
-  included do
-    after_save :chroma_upsert_embedding
-    after_destroy :chroma_destroy_embedding
-
-    class_attribute :collection_name
-    class_attribute :document
-    class_attribute :metadata
-    class_attribute :embedder
+  def self.included(base) 
+    base.extend ClassMethods
+    base.class_attribute :collection_name
+    base.class_attribute :document
+    base.class_attribute :metadata
+    base.class_attribute :embedder
+    
+    base.after_save :chroma_upsert_embedding
+    base.after_destroy :chroma_destroy_embedding
   end
 
-  class_methods do
+  module ClassMethods
     def chromable(collection_name: nil, document: nil, metadata: nil, embedder: nil)
       self.collection_name = (collection_name.presence || name.underscore.pluralize)
       self.document = document
