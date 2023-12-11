@@ -64,7 +64,7 @@ Post.query(
   query: params[:query],
   results: 20,
   where: chroma_search_filters,
-  type: 'query' # `type` here will be passed to `Post.embed` as an option.
+  is_query: true # `is_query` here will be passed to `Post.embed` as an option.
 )
 ```
 
