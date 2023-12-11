@@ -32,8 +32,14 @@ class Post < ApplicationRecord
 
   chromable document: :content, metadata: %i[author category], embedder: :embed
 
-  def embed
-    # Call OpenAI now please :)
+  def self.embed(text, **options)
+    options[:is_query] ||= false
+
+    if options[:is_query]
+      # Call OpenAI API to embed `text` as a search query.
+    else
+      # Call OpenAI API to embed `text` as a post content.
+    end
   end
 end
 ```
@@ -41,22 +47,36 @@ end
 Where:
 - `document:` is a callable represents the text content you want to embed and store in ChromaDB.
 - `metadata:` is the list of attributes to be passed to ChromaDB as metadata to be used to filter.
-- `embedder:` is a callable returns the embedding representation for the current instance.
+- `embedder:` is a callable defined in the model that returns the embedding representation for the given `text` and `options`.
 
 Optionaly you can pass `collection_name:`. If not passed, the plural form of the model name will be used.
 
-All `chromable` method arguments are optional.
+The only required option for `chromable` method is `document:`.
 
-At this point, `chromable` will create, update, and destroy the ChromaDB embeddings for your objects based on Rails callbacks.
+At this point, `chromable` will create, update, and destroy the ChromaDB embeddings for your objects based on Rails `after_save` and `after_destroy` callbacks.
 
-To interact with the ChromaDB collection, `chromable` provides `Model.collection` method to retrieve the collection instance.
+To interact with the ChromaDB collection, `chromable` provides `Model.query` method to query the collection and `Model.collection` method to access the collection directly.
+
+```ruby
+puts Post.collection.count # Gets the number of documents inside the collection. Should always match Post.count.
+
+Post.query(
+  query: params[:query],
+  results: 20,
+  where: chroma_search_filters,
+  type: 'query' # `type` here will be passed to `Post.embed` as an option.
+)
+```
+
+`Model.query` accepts the same arguments accepted by `chroma-db` gem `query` method. Extra arguments will be passed to the `embedder:`. Behind the scene, `Model.query` will embed the given `query:` text, then query the collection, and return the closest `results:` records.
+
 Also, `chromable` provides the following methods for each model instance:
 
 - `embedding`: Retrieves the instance's ChromaDB embedding object.
 - `upsert_embedding`: Creates or updates the instance's ChromaDB embedding object.
 - `destroy_embedding`: Destroys the instance's ChromaDB embedding object.
 
-All these methods (including `Model.collection`) are available with `chroma_` prefix, if you have similar methods defined in your model.
+All these methods (including `Model.query` and `Model.collection`) are available with `chroma_` prefix, if you have similar methods defined in your model.
 
 ## Development
 
