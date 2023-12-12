@@ -45,13 +45,13 @@ end
 ```
 
 Where:
-- `document:` is a callable represents the text content you want to embed and store in ChromaDB.
-- `metadata:` is the list of attributes to be passed to ChromaDB as metadata to be used to filter.
-- `embedder:` is a callable defined in the model that returns the embedding representation for the given `text` and `options`.
+- `document:` is a callable represents the text content you want to embed and store in ChromaDB (e.g. Could be a model attribute).
+- `metadata:` is a list of callables to be evaluated and passed to ChromaDB as metadata to be used to filter (e.g. Could be an instance method).
+- `embedder:` is a callable defined at the model level that returns the embedding representation for the given `text` based on some `options`.
 
 Optionaly you can pass `collection_name:`. If not passed, the plural form of the model name will be used.
 
-The only required option for `chromable` method is `document:`.
+The only required option for `chromable` is `document:`.
 
 At this point, `chromable` will create, update, and destroy the ChromaDB embeddings for your objects based on Rails `after_save` and `after_destroy` callbacks.
 
@@ -68,7 +68,7 @@ Post.query(
 )
 ```
 
-`Model.query` accepts the same arguments accepted by `chroma-db` gem `query` method. Extra arguments will be passed to the `embedder:`. Behind the scene, `Model.query` will embed the given `query:` text, then query the collection, and return the closest `results:` records.
+`Model.query` accepts the same arguments accepted by `chroma-db` gem `query` method. Extra arguments will be passed to the `embedder:` as `options`. Behind the scenes, `Model.query` will embed the given `query:` text, then query the collection, and return the closest `results:` records.
 
 Also, `chromable` provides the following methods for each model instance:
 

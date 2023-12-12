@@ -29,7 +29,7 @@ module Chromable
     end
 
     def chroma_query( # rubocop:disable Metrics/ParameterLists
-      query:,
+      text:,
       results: 10,
       where: {},
       where_document: {},
@@ -37,7 +37,7 @@ module Chromable
       **embedder_options
     )
       find(chroma_collection.query(
-        query_embeddings: [send(embedder, query, **embedder_options)],
+        query_embeddings: [send(embedder, text, **embedder_options)],
         results: results,
         where: where,
         where_document: where_document,
