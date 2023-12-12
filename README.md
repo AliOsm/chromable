@@ -2,6 +2,8 @@
 
 Ruby on Rails integration for ChromaDB based on `chroma-db` gem.
 
+`chromable` were tested with Ruby 3.2.2 and Rails 7.1.2.
+
 ## Installation
 
 Install `chromable` and add it to the application's Gemfile by executing:
@@ -30,7 +32,7 @@ Then, include `Chromable` module in your model and initialize it:
 class Post < ApplicationRecord
   include Chromable
 
-  chromable document: :content, metadata: %i[author category], embedder: :embed
+  chromable document: :content, metadata: %i[author category], embedder: :embed, keep_document: false
 
   def self.embed(text, **options)
     options[:is_query] ||= false
@@ -48,6 +50,7 @@ Where:
 - `document:` is a callable represents the text content you want to embed and store in ChromaDB (e.g. Could be a model attribute).
 - `metadata:` is a list of callables to be evaluated and passed to ChromaDB as metadata to be used to filter (e.g. Could be an instance method).
 - `embedder:` is a callable defined at the model level that returns the embedding representation for the given `text` based on some `options`.
+- `keep_document:` tells chromable to pass the `document:` to ChromaDB and save it or not. It is useful if you just want to have the embeddings in ChromaDB and the rest of the data in your Rails application database to reduce memory footprint. `keep_document:` is `true` by default.
 
 Optionaly you can pass `collection_name:`. If not passed, the plural form of the model name will be used.
 

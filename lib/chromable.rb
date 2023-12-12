@@ -10,6 +10,7 @@ module Chromable
     base.class_attribute :document
     base.class_attribute :metadata
     base.class_attribute :embedder
+    base.class_attribute :keep_document
 
     base.after_save :chroma_upsert_embedding
     base.after_destroy :chroma_destroy_embedding
@@ -17,11 +18,12 @@ module Chromable
 
   # Methods to be added to the model class.
   module ClassMethods
-    def chromable(document:, metadata: nil, embedder: nil, collection_name: nil)
+    def chromable(document:, metadata: nil, embedder: nil, collection_name: nil, keep_document: true)
       self.collection_name = (collection_name.presence || name.underscore.pluralize)
       self.document = document
       self.metadata = metadata
       self.embedder = embedder
+      self.keep_document = keep_document
     end
 
     def chroma_collection
@@ -68,13 +70,23 @@ module Chromable
   private
 
   def build_embedding
-    document = send(self.class.document)
-
     Chroma::Resources::Embedding.new(
       id: id,
-      document: document,
-      embedding: self.class.embedder && self.class.send(self.class.embedder, document),
-      metadata: self.class.metadata&.index_with { |attribute| send(attribute) }
+      document: document_to_embed,
+      embedding: document_embedding,
+      metadata: embedding_metadata
     )
+  end
+
+  def document_to_embed
+    self.class.keep_document ? send(self.class.document) : nil
+  end
+
+  def document_embedding
+    self.class.embedder && self.class.send(self.class.embedder, send(self.class.document))
+  end
+
+  def embedding_metadata
+    self.class.metadata&.index_with { |attribute| send(attribute) }
   end
 end
