@@ -30,6 +30,7 @@ module Chromable
     def self.extended(base)
       class << base
         alias_method :collection, :chroma_collection unless method_defined? :collection
+        alias_method :delete_collection, :chroma_delete_collection unless method_defined? :delete_collection
         alias_method :query, :chroma_query unless method_defined? :query
       end
 
@@ -44,6 +45,10 @@ module Chromable
 
     def chroma_collection
       Chroma::Resources::Collection.get_or_create(chromable_settings.collection_name)
+    end
+
+    def chroma_delete_collection
+      Chroma::Resources::Collection.delete(chromable_settings.collection_name)
     end
 
     def chroma_query( # rubocop:disable Metrics/ParameterLists
