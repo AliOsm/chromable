@@ -6,28 +6,44 @@ require_relative 'chromable/version'
 module Chromable
   def self.included(base)
     base.extend ClassMethods
-    base.class_attribute :collection_name
-    base.class_attribute :document
-    base.class_attribute :metadata
-    base.class_attribute :embedder
-    base.class_attribute :keep_document
+    base.include InstanceMethods
 
     base.after_save :chroma_upsert_embedding
     base.after_destroy :chroma_destroy_embedding
   end
 
+  # Chromable settings class to hide them from Rails models.
+  class Settings
+    attr_accessor :document, :collection_name, :metadata, :embedder, :keep_document
+
+    def initialize(document:, metadata: nil, embedder: nil, collection_name: nil, keep_document: true)
+      @collection_name = collection_name
+      @document = document
+      @metadata = metadata
+      @embedder = embedder
+      @keep_document = keep_document
+    end
+  end
+
   # Methods to be added to the model class.
   module ClassMethods
-    def chromable(document:, metadata: nil, embedder: nil, collection_name: nil, keep_document: true)
-      self.collection_name = (collection_name.presence || name.underscore.pluralize)
-      self.document = document
-      self.metadata = metadata
-      self.embedder = embedder
-      self.keep_document = keep_document
+    def self.extended(base)
+      class << base
+        alias_method :collection, :chroma_collection unless method_defined? :collection
+        alias_method :query, :chroma_query unless method_defined? :query
+      end
+
+      base.cattr_accessor :chromable_settings
+    end
+
+    def chromable(**options)
+      options[:collection_name] ||= name.underscore.pluralize
+
+      self.chromable_settings = Settings.new(**options)
     end
 
     def chroma_collection
-      Chroma::Resources::Collection.get_or_create(collection_name)
+      Chroma::Resources::Collection.get_or_create(chromable_settings.collection_name)
     end
 
     def chroma_query( # rubocop:disable Metrics/ParameterLists
@@ -39,54 +55,60 @@ module Chromable
       **embedder_options
     )
       find(chroma_collection.query(
-        query_embeddings: [send(embedder, text, **embedder_options)],
+        query_embeddings: [send(chromable_settings.embedder, text, **embedder_options)],
         results: results,
         where: where,
         where_document: where_document,
         include: include
       ).map(&:id))
     end
-
-    alias collection chroma_collection unless method_defined? :collection
-    alias query chroma_query unless method_defined? :query
   end
 
-  def chroma_embedding
-    self.class.chroma_collection.get(ids: [id])[0]
-  end
+  # Methods to be added to the model instances.
+  module InstanceMethods
+    def self.included(base)
+      base.instance_eval do
+        # rubocop:disable Style/Alias
+        alias_method :embedding, :chroma_embedding unless method_defined? :embedding
+        alias_method :upsert_embedding, :chroma_upsert_embedding unless method_defined? :upsert_embedding
+        alias_method :destroy_embedding, :chroma_destroy_embedding unless method_defined? :destroy_embedding
+        # rubocop:enable Style/Alias
+      end
+    end
 
-  def chroma_upsert_embedding
-    self.class.chroma_collection.upsert(build_embedding)
-  end
+    def chroma_embedding
+      self.class.chroma_collection.get(ids: [id])[0]
+    end
 
-  def chroma_destroy_embedding
-    self.class.chroma_collection.delete(ids: [id])
-  end
+    def chroma_upsert_embedding
+      self.class.chroma_collection.upsert(build_embedding)
+    end
 
-  alias embedding chroma_embedding unless method_defined? :embedding
-  alias upsert_embedding chroma_upsert_embedding unless method_defined? :upsert_embedding
-  alias destroy_embedding chroma_destroy_embedding unless method_defined? :destroy_embedding
+    def chroma_destroy_embedding
+      self.class.chroma_collection.delete(ids: [id])
+    end
 
-  private
+    private
 
-  def build_embedding
-    Chroma::Resources::Embedding.new(
-      id: id,
-      document: document_to_embed,
-      embedding: document_embedding,
-      metadata: embedding_metadata
-    )
-  end
+    def build_embedding
+      Chroma::Resources::Embedding.new(
+        id: id,
+        document: document_to_embed,
+        embedding: document_embedding,
+        metadata: embedding_metadata
+      )
+    end
 
-  def document_to_embed
-    self.class.keep_document ? send(self.class.document) : nil
-  end
+    def document_to_embed
+      chromable_settings.keep_document ? send(chromable_settings.document) : nil
+    end
 
-  def document_embedding
-    self.class.embedder && self.class.send(self.class.embedder, send(self.class.document))
-  end
+    def document_embedding
+      chromable_settings.embedder && self.class.send(chromable_settings.embedder, send(chromable_settings.document))
+    end
 
-  def embedding_metadata
-    self.class.metadata&.index_with { |attribute| send(attribute) }
+    def embedding_metadata
+      chromable_settings.metadata&.index_with { |attribute| send(attribute) }
+    end
   end
 end
