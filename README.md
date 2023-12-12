@@ -58,20 +58,21 @@ The only required option for `chromable` is `document:`.
 
 At this point, `chromable` will create, update, and destroy the ChromaDB embeddings for your objects based on Rails `after_save` and `after_destroy` callbacks.
 
-To interact with the ChromaDB collection, `chromable` provides `Model.query` method to query the collection and `Model.collection` method to access the collection directly.
+To interact with the ChromaDB collection, `chromable` provides:
+- `Model.query` to query the collection using similar API used in `chroma-db` gem, except for accepting `text:` instead of `query_embeddings:`. Extra arguments will be passed to the `embedder:` as `options`. Behind the scenes, `Model.query` will embed the given `text:`, then query the collection, and return the closest `results:` records.
+- `Model.collection` to access the collection directly.
+- `Model.delete_collection` to delete the entire collection.
 
 ```ruby
 puts Post.collection.count # Gets the number of documents inside the collection. Should always match Post.count.
 
 Post.query(
-  query: params[:query],
+  text: params[:query],
   results: 20,
   where: chroma_search_filters,
   is_query: true # `is_query` here will be passed to `Post.embed` as an option.
 )
 ```
-
-`Model.query` accepts the same arguments accepted by `chroma-db` gem `query` method. Extra arguments will be passed to the `embedder:` as `options`. Behind the scenes, `Model.query` will embed the given `query:` text, then query the collection, and return the closest `results:` records.
 
 Also, `chromable` provides the following methods for each model instance:
 
@@ -79,7 +80,7 @@ Also, `chromable` provides the following methods for each model instance:
 - `upsert_embedding`: Creates or updates the instance's ChromaDB embedding object.
 - `destroy_embedding`: Destroys the instance's ChromaDB embedding object.
 
-All these methods (including `Model.query` and `Model.collection`) are available with `chroma_` prefix, if you have similar methods defined in your model.
+All these methods (including `Model.query`, `Model.collection`, and `Model.delete_collection`) are available with `chroma_` prefix, if you have similar methods defined in your model.
 
 ## Development
 
