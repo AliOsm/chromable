@@ -51,14 +51,7 @@ module Chromable
       Chroma::Resources::Collection.delete(chromable_settings.collection_name)
     end
 
-    def chroma_query( # rubocop:disable Metrics/ParameterLists
-      text:,
-      results: 10,
-      where: {},
-      where_document: {},
-      include: %w[metadatas documents distances],
-      **embedder_options
-    )
+    def chroma_query(text:, results: 10, where: {}, where_document: {}, **embedder_options)
       find(chroma_collection.query(
         query_embeddings: [send(chromable_settings.embedder, text, **embedder_options)],
         results: results,
@@ -77,6 +70,7 @@ module Chromable
         alias_method :embedding, :chroma_embedding unless method_defined? :embedding
         alias_method :upsert_embedding, :chroma_upsert_embedding unless method_defined? :upsert_embedding
         alias_method :destroy_embedding, :chroma_destroy_embedding unless method_defined? :destroy_embedding
+        alias_method :neighbors, :chroma_neighbors unless method_defined? :neighbors
         # rubocop:enable Style/Alias
       end
     end
@@ -91,6 +85,20 @@ module Chromable
 
     def chroma_destroy_embedding
       self.class.chroma_collection.delete(ids: [id])
+    end
+
+    def chroma_neighbors(results: 10, where: {}, where_document: {})
+      collection = self.class.chroma_collection
+
+      embedding = collection.get(ids: [id], include: [:embeddings])[0].embedding
+
+      self.class.find(collection.query(
+        query_embeddings: [embedding],
+        results: results,
+        where: where,
+        where_document: where_document,
+        include: include
+      ).map(&:id))
     end
 
     private

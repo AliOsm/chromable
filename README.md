@@ -72,6 +72,8 @@ Post.query(
   where: chroma_search_filters,
   is_query: true # `is_query` here will be passed to `Post.embed` as an option.
 )
+
+Post.first.neighbors(results: 20) # => [#<Post:0x0000ffff9e0b5f10 id: "0beb0f98, ...>, ...]
 ```
 
 Also, `chromable` provides the following methods for each model instance:
@@ -79,6 +81,7 @@ Also, `chromable` provides the following methods for each model instance:
 - `embedding`: Retrieves the instance's ChromaDB embedding object.
 - `upsert_embedding`: Creates or updates the instance's ChromaDB embedding object.
 - `destroy_embedding`: Destroys the instance's ChromaDB embedding object.
+- `neighbors`: Gets the closest `results:` records to the current record.
 
 All these methods (including `Model.query`, `Model.collection`, and `Model.delete_collection`) are available with `chroma_` prefix, if you have similar methods defined in your model.
 
