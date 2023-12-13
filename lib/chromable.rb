@@ -56,8 +56,7 @@ module Chromable
         query_embeddings: [send(chromable_settings.embedder, text, **embedder_options)],
         results: results,
         where: where,
-        where_document: where_document,
-        include: include
+        where_document: where_document
       ).map(&:id))
     end
   end
@@ -96,8 +95,7 @@ module Chromable
         query_embeddings: [embedding],
         results: results,
         where: where,
-        where_document: where_document,
-        include: include
+        where_document: where_document
       ).map(&:id))
     end
 

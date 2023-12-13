@@ -73,7 +73,7 @@ Post.query(
   is_query: true # `is_query` here will be passed to `Post.embed` as an option.
 )
 
-Post.first.neighbors(results: 20) # => [#<Post:0x0000ffff9e0b5f10 id: "0beb0f98, ...>, ...]
+Post.first.neighbors(results: 20) # => [#<Post:0x0000ffff9e0b5f10 id: "0beb0f98...", ...>, ...]
 ```
 
 Also, `chromable` provides the following methods for each model instance:

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    chromable (0.3.1)
+    chromable (0.3.2)
       chroma-db (>= 0.6.0)
 
 GEM
