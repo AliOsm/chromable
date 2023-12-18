@@ -49,6 +49,8 @@ module Chromable
 
     def chroma_delete_collection
       Chroma::Resources::Collection.delete(chromable_settings.collection_name)
+    rescue Chroma::InvalidRequestError
+      Chroma::Util.log_debug("Collection #{chromable_settings.collection_name} does not exist.")
     end
 
     def chroma_query(text:, results: 10, where: {}, where_document: {}, **embedder_options)
