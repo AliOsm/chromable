@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    chromable (0.3.2)
+    chromable (0.3.3)
       chroma-db (>= 0.6.0)
 
 GEM
@@ -80,6 +80,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  arm64-darwin-23
   x86_64-linux
 
 DEPENDENCIES

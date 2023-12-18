@@ -103,7 +103,7 @@ module Chromable
 
     def build_embedding
       Chroma::Resources::Embedding.new(
-        id: id,
+        id: id.to_s,
         document: document_to_embed,
         embedding: document_embedding,
         metadata: embedding_metadata
