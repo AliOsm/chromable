@@ -77,7 +77,7 @@ module Chromable
     end
 
     def chroma_embedding
-      self.class.chroma_collection.get(ids: [id])[0]
+      self.class.chroma_collection.get(ids: [id.to_s])[0]
     end
 
     def chroma_upsert_embedding
@@ -85,13 +85,13 @@ module Chromable
     end
 
     def chroma_destroy_embedding
-      self.class.chroma_collection.delete(ids: [id])
+      self.class.chroma_collection.delete(ids: [id.to_s])
     end
 
     def chroma_neighbors(results: 10, where: {}, where_document: {})
       collection = self.class.chroma_collection
 
-      embedding = collection.get(ids: [id], include: [:embeddings])[0].embedding
+      embedding = collection.get(ids: [id.to_s], include: [:embeddings])[0].embedding
 
       self.class.find(collection.query(
         query_embeddings: [embedding],
