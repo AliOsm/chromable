@@ -6,7 +6,7 @@ source 'https://rubygems.org'
 gemspec
 
 group :development do
-  gem 'rubocop', '~> 1.60'
+  gem 'rubocop', '~> 1.61'
   gem 'rubocop-rspec', '~> 2.26'
 end
 
