@@ -20,10 +20,10 @@ GEM
       concurrent-ruby (~> 1.0)
       dry-core (~> 1.0, < 2)
       zeitwerk (~> 2.6)
-    json (2.7.1)
+    json (2.7.2)
     language_server-protocol (3.17.0.3)
     parallel (1.24.0)
-    parser (3.3.0.3)
+    parser (3.3.0.5)
       ast (~> 2.4.1)
       racc
     racc (1.7.3)
@@ -43,7 +43,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
     rspec-support (3.12.1)
-    rubocop (1.60.0)
+    rubocop (1.63.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -51,11 +51,11 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.30.0, < 2.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.30.0)
-      parser (>= 3.2.1.0)
+    rubocop-ast (1.31.2)
+      parser (>= 3.3.0.4)
     rubocop-capybara (2.20.0)
       rubocop (~> 1.41)
     rubocop-factory_bot (2.25.1)
@@ -86,7 +86,7 @@ PLATFORMS
 DEPENDENCIES
   chromable!
   rspec (~> 3.12)
-  rubocop (~> 1.60)
+  rubocop (~> 1.63)
   rubocop-rspec (~> 2.26)
 
 BUNDLED WITH
