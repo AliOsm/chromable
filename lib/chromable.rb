@@ -23,6 +23,10 @@ module Chromable
       @embedder = embedder
       @keep_document = keep_document
     end
+
+    def collection_name
+      @collection_name.is_a?(Proc) ? @collection_name.call : @collection_name
+    end
   end
 
   # Methods to be added to the model class.
@@ -38,7 +42,7 @@ module Chromable
     end
 
     def chromable(**options)
-      options[:collection_name] ||= name.underscore.pluralize
+      options[:collection_name] ||= -> { name.underscore.pluralize }
 
       self.chromable_settings = Settings.new(**options)
     end
