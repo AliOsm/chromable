@@ -24,7 +24,7 @@ module Chromable
       @keep_document = keep_document
     end
 
-    def collection_name
+    def collection_name # rubocop:disable Lint/DuplicateMethods
       @collection_name.is_a?(Proc) ? @collection_name.call : @collection_name
     end
   end

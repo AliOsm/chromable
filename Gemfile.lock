@@ -1,14 +1,14 @@
 PATH
   remote: .
   specs:
-    chromable (0.3.4)
-      chroma-db (>= 0.6.0)
+    chromable (0.3.5)
+      chroma-db (>= 0.7.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
-    chroma-db (0.6.0)
+    chroma-db (0.7.0)
       dry-monads (~> 1.6)
       ruby-next (>= 0.15.0)
     concurrent-ruby (1.2.2)
